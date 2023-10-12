@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covid Information</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: rgb(9, 22, 33);
+            color: rgb(217, 186, 151);
+        }
+
+        header {
+            background-color: rgb(62, 131, 132);
+            padding: 10px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: rgb(62, 131, 132);
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Style for Covid Information */
+        #covid-section {
+            background-color: rgb(9, 22, 33);
+            padding: 20px;
+            text-align: center;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        /* Add other styles as needed */
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Covid Information</h1>
+    </header>
+
+    <main>
+        <p>Done by rutuja gaikwad</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Covid Information</p>
+    </footer>
+
+    <!-- Disease.sh API Example -->
+    <div id="covid-section">
+        <h1>COVID-19 Country and State-wise Statistics</h1>
+        <label for="countryInput">Enter Country:</label>
+        <input type="text" id="countryInput" placeholder="e.g., USA">
+        <button onclick="getCovidData()">Get COVID-19 Data</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function getCovidData() {
+            const countryInput = document.getElementById('countryInput').value.trim();
+            const apiEndpoint = `https://disease.sh/v3/covid-19/countries/${countryInput}`;
+
+            // Make a GET request to the API
+            fetch(apiEndpoint)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data
+                    displayResult(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    displayResult('Error fetching data. Check the console for details.');
+                });
+        }
+
+        function displayResult(data) {
+            const resultContainer = document.getElementById('result');
+            resultContainer.innerHTML = '';
+
+            // Display the result in the 'result' div
+            if (typeof data === 'object') {
+                resultContainer.innerHTML = `<h2>COVID-19 Statistics for ${data.country}:</h2>`;
+                resultContainer.innerHTML += `<p><strong>Total Cases:</strong> ${data.cases}</p>`;
+                resultContainer.innerHTML += `<p><strong>Total Deaths:</strong> ${data.deaths}</p>`;
+                resultContainer.innerHTML += `<p><strong>Total Recovered:</strong> ${data.recovered}</p>`;
+                resultContainer.innerHTML += `<p><strong>Last Updated:</strong> ${new Date(data.updated).toLocaleString()}</p>`;
+
+                if (data.countryInfo) {
+                    resultContainer.innerHTML += `<p><strong>Flag:</strong> <img src="${data.countryInfo.flag}" alt="Flag"></p>`;
+                }
+            } else {
+                resultContainer.innerHTML = `<p>${data}</p>`;
+            }
+        }
+    </script>
+
+</body>
+</html>
